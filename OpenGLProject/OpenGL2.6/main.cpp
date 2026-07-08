@@ -46,6 +46,8 @@ bool checkOpenGLError() {
 
 GLuint renderingProgram;
 GLuint vao[numVAOs];
+float x = 0.0f;
+float inc = 0.01f;
 
 GLuint CreateShaderProgram() {
 	GLint vertCompiled;
@@ -54,17 +56,17 @@ GLuint CreateShaderProgram() {
 
 	const char* vshaderSource =
 		"#version 430 \n"
+		"uniform float offset; \n"
 		"void main(void) \n"
-		"{ gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }";
+		"{ if(gl_VertexID == 0) gl_Position = vec4{0.25 + offset, -0.25, 0.0, 1.0}; \n"
+		"	else if(gl_VertexID == 0) gl_Position = vec4{-0.25 + offset, -0.25, 0.0, 1.0}; \n"
+		"	else gl_Position = vec4{0.25 + offset, 0.25, 0.0, 1.0}; }";
 
 	const char* fshaderSource =
 		"#version 430 \n"
 		"out vec4 color; \n"
 		"void main(void) \n"
-		// "{ color = vec4(0.0, 0.0, 1.0, 1.0); }";
-		"{ if (gl_FragCoord.x < 200) color = vec4(1.0, 0.0, 0.0, 1.0); else color = vec4(0.0, 0.0, 1.0, 1.0);}";
-		// 自主设计效果 好像没有用Q^Q
-		// "{color = vec4((gl_FragCoord.x % 256) / 256f, (gl_FragCoord.y % 256) / 256f, 0.0, 1.0); }";
+		"{ color = vec4(0.0, 0.0, 1.0, 1.0); }";
 
 	GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -108,13 +110,23 @@ void init(GLFWwindow* window) {
 	renderingProgram = CreateShaderProgram();
 	glGenVertexArrays(numVAOs, vao);
 	glBindVertexArray(vao[0]);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-
 void display(GLFWwindow* window, double currentTime) {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	glUseProgram(renderingProgram);
-	glPointSize(600.0f);
-	glDrawArrays(GL_POINTS, 0, 1);
+
+	x += inc;
+	if (x > 1.0f) inc = -0.01f;
+	if (x < -1.0f) inc = 0.01f;
+	GLuint offsetLoc = glGetUniformLocation(renderingProgram, "offset");
+	glProgramUniform1f(renderingProgram, offsetLoc, x);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int main(void) {
@@ -124,7 +136,11 @@ int main(void) {
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	GLFWwindow* window = glfwCreateWindow(600, 600, "Chapter2 - program2", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(600, 600, "Chapter2 - program6", NULL, NULL);
+	if (window == NULL) {
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
 	glfwMakeContextCurrent(window);
 	if (glewInit() != GLEW_OK) {
 		exit(EXIT_FAILURE);
