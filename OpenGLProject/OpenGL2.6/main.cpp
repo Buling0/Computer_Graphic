@@ -58,9 +58,9 @@ GLuint CreateShaderProgram() {
 		"#version 430 \n"
 		"uniform float offset; \n"
 		"void main(void) \n"
-		"{ if(gl_VertexID == 0) gl_Position = vec4{0.25 + offset, -0.25, 0.0, 1.0}; \n"
-		"	else if(gl_VertexID == 0) gl_Position = vec4{-0.25 + offset, -0.25, 0.0, 1.0}; \n"
-		"	else gl_Position = vec4{0.25 + offset, 0.25, 0.0, 1.0}; }";
+		"{ if(gl_VertexID == 0) gl_Position = vec4(0.25 + offset, -0.25, 0.0, 1.0); \n"
+		"	else if(gl_VertexID == 1) gl_Position = vec4(-0.25 + offset, -0.25, 0.0, 1.0); \n"
+		"	else gl_Position = vec4(0.25 + offset, 0.25, 0.0, 1.0); }";
 
 	const char* fshaderSource =
 		"#version 430 \n"
