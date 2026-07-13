@@ -15,7 +15,39 @@ OpenGL函数库相关的API有核心库(gl)，实用库(glu)，辅助库(aux)、
 
 - 平移矩阵
 
+![alt text](image.png)
+
 - 缩放矩阵
+
+![alt text](image-1.png)
+
 - 旋转矩阵
-- 投影矩阵
+
+![alt text](image-2.png)
+
+- 透视投影
+
+![alt text](image-3.png)
+
+- 透视投影矩阵计算公式
+
+![alt text](image-4.png)
+
+- 正射投影
+
+![alt text](image-5.png)
+
+- 正射投影矩阵计算公式
+
+![alt text](image-6.png)
+
+- LookAt
+
+![alt text](image-7.png)
+
 - LookAt矩阵
+
+![alt text](image-8.png)
+
+
+
