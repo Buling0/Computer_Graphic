@@ -49,5 +49,32 @@ OpenGL函数库相关的API有核心库(gl)，实用库(glu)，辅助库(aux)、
 
 ![alt text](image-8.png)
 
+## 第四章
+顶点缓冲对象（Vertex Buffer Object，VBO）
+顶点数组对象（Vertex Array Object，VAO）
 
+好多东西都是实例里面的，感觉没有精力整理了，看代码吧
+
+Z冲突（Z-fighting）又叫深度冲突（Depth-fighting）
+
+三角形图元类型
+
+![alt text](image-9.png)
+
+线图元类型
+
+![alt text](image-10.png)
+
+点图元
+
+![alt text](image-11.png)
+
+补丁图元
+
+![alt text](image-12.png)
+
+几个性能优化的方法
+1. 减少动态分配内存，在display中使用的变量尽量提前声明，或者其他预分配或者减少类型转换产生的内存分配；
+2. 预计算透视矩阵，透视计算开销很大，不在display中计算透视，在初始化计算一次，然后在调整窗口大小的时候添加一个回调重新计算；
+3. 背面剔除，对于模型经常出现封闭的3D模型内部永远不可见，那么就不渲染图元背面可以减少计算量。
 
