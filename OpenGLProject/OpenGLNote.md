@@ -84,3 +84,12 @@ Z冲突（Z-fighting）又叫深度冲突（Depth-fighting）
 各向异性过滤（AF）
 
 
+# 第七章
+
+光照模型 最常用的是 ADS光照模型
+
+ADS光照模型
+
+- 环境光反射（Ambient reflection）模拟低级光照，影响场景中的所有物体。
+- 漫反射（Diffuse reflection）根据光线的入射角度调整物体亮度。
+- 镜面反射（Specular reflection）用以展示物体的光泽，通过在物体表面上，光线最直接地反射到我们的眼睛的位置，策略性地放置适当大小的高光来实现。
