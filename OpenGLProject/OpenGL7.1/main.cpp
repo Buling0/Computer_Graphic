@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // OpenGL 7.1 - ADS 光照模型示例
 // 教材：第 7 章 Program 1（Prog7_1_lightingADS）
 //
@@ -7,6 +7,16 @@
 //   2. 位置光源与材质属性（金色材质）
 //   3. 三种着色实现：Gouraud / Phong / Blinn-Phong（默认 Blinn-Phong）
 //   4. 光源绕 Z 轴旋转，观察高光变化
+// 
+// 核心概念：
+//   ADS = Ambient（环境光）+ Diffuse（漫反射）+ Specular（镜面反射）
+//   光照计算在【视图空间】进行，顶点位置、法线、光源位置必须同一坐标系
+//
+// ADS 公式：
+//   ambient  = (globalAmbient × mat.ambient) + (light.ambient × mat.ambient)
+//   diffuse  = light.diffuse × mat.diffuse × max(dot(N,L), 0)
+//   specular = light.specular × mat.specular × pow(max(cos角), shininess)
+//   其中 N=法线, L=指向光源, V=指向相机
 // ============================================================================
 
 #include <GL/glew.h>
@@ -25,7 +35,7 @@ using namespace std;
 float toRadians(float degrees) { return (degrees * 2.0f * 3.14159f) / 360.0f; }
 
 #define numVAOs 1
-#define numVBOs 4
+#define numVBOs 4 // 位置、纹理、法线、索引
 
 float cameraX, cameraY, cameraZ;
 float torLocX, torLocY, torLocZ;
@@ -33,12 +43,12 @@ GLuint renderingProgram;
 GLuint vao[numVAOs];
 GLuint vbo[numVBOs];
 
-Torus myTorus(0.5f, 0.2f, 48);
+Torus myTorus(0.5f, 0.2f, 48); // inner=0.5, outer=0.2, 精度48
 int numTorusVertices = myTorus.getNumVertices();
 int numTorusIndices = myTorus.getNumIndices();
 
-glm::vec3 lightLoc = glm::vec3(5.0f, 2.0f, 2.0f);
-float amt = 0.0f;
+glm::vec3 lightLoc = glm::vec3(5.0f, 2.0f, 2.0f); // 光源初始世界坐标
+float amt = 0.0f;// 光源绕Z轴旋转累积角度
 
 GLuint mvLoc, projLoc, nLoc;
 GLuint globalAmbLoc, ambLoc, diffLoc, specLoc, posLoc, mambLoc, mdiffLoc, mspecLoc, mshiLoc;
@@ -48,16 +58,19 @@ glm::mat4 pMat, vMat, mMat, mvMat, invTrMat, rMat;
 glm::vec3 currentLightPos, transformed;
 float lightPos[3];
 
-float globalAmbient[4] = { 0.7f, 0.7f, 0.7f, 1.0f };
+// ---- 光照参数 ----
+float globalAmbient[4] = { 0.7f, 0.7f, 0.7f, 1.0f };// 全局环境光（场景底色）
 float lightAmbient[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-float lightDiffuse[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-float lightSpecular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+float lightDiffuse[4] = { 1.0f, 1.0f, 1.0f, 1.0f };// 白色漫反射光
+float lightSpecular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };// 白色镜面高光
 
 float* matAmb = Utils::goldAmbient();
 float* matDif = Utils::goldDiffuse();
 float* matSpe = Utils::goldSpecular();
-float matShi = Utils::goldShininess();
+float matShi = Utils::goldShininess();// 越大高光越尖锐
 
+// 将光源/材质 uniform 传入着色器
+// 光源位置必须用视图矩阵变换到视图空间，与顶点坐标系一致
 void installLights(glm::mat4 vMatrix) {
 	transformed = glm::vec3(vMatrix * glm::vec4(currentLightPos, 1.0));
 	lightPos[0] = transformed.x;
@@ -124,7 +137,10 @@ void setupVertices(void) {
 }
 
 void init(GLFWwindow* window) {
-	// 切换着色器：GouraudShaders / PhongShaders / BlinnPhongShaders
+	// 切换 ADS 着色实现（三选一）：
+	//   GouraudShaders    — 顶点算光照，插值颜色（快，高光可能失真）
+	//   PhongShaders      — 片段逐像素算光照（精确）
+	//   BlinnPhongShaders — 半角向量替代反射向量（默认，高光更自然）
 	renderingProgram = Utils::createShaderProgram(
 		"./BlinnPhongShaders/vertShader.glsl",
 		"./BlinnPhongShaders/fragShader.glsl");
@@ -134,6 +150,7 @@ void init(GLFWwindow* window) {
 
 	glfwGetFramebufferSize(window, &width, &height);
 	aspect = (float)width / (float)height;
+	glViewport(0, 0, width, height);
 	pMat = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);
 
 	setupVertices();
@@ -162,12 +179,15 @@ void display(GLFWwindow* window, double currentTime) {
 
 	installLights(vMat);
 
+	// 法线矩阵 = (MV)^(-T)，保证法线在变换后仍垂直于表面
 	mvMat = vMat * mMat;
 	invTrMat = glm::transpose(glm::inverse(mvMat));
 
 	glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
 	glUniformMatrix4fv(nLoc, 1, GL_FALSE, glm::value_ptr(invTrMat));
+
+	glBindVertexArray(vao[0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);

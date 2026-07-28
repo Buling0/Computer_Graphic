@@ -16,6 +16,10 @@ Utils::Utils() {}
 string Utils::readShaderFile(const char *filePath) {
 	string content;
 	ifstream fileStream(filePath, ios::in);
+	if (!fileStream.is_open()) {
+		cout << "ERROR: cannot open shader file: " << filePath << endl;
+		return content;
+	}
 	string line = "";
 	while (!fileStream.eof()) {
 		getline(fileStream, line);

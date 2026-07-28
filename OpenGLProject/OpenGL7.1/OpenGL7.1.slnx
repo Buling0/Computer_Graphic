@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="OpenGL7.1.vcxproj" />
+  <Project Path="OpenGL7.1.vcxproj" Id="1de72cc4-7891-4b1e-8c6c-11c02927dac8" />
 </Solution>

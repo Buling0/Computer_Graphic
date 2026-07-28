@@ -94,7 +94,10 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\glew-2.3.1\bin\Release\Win32\glew32.dll" "$(OutDir)"</Command>
+      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\glew-2.3.1\bin\Release\Win32\glew32.dll" "$(OutDir)"
+xcopy /E /I /Y "$(ProjectDir)BlinnPhongShaders" "$(OutDir)BlinnPhongShaders\"
+xcopy /E /I /Y "$(ProjectDir)GouraudShaders" "$(OutDir)GouraudShaders\"
+xcopy /E /I /Y "$(ProjectDir)PhongShaders" "$(OutDir)PhongShaders\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,7 +120,10 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\glew-2.3.1\bin\Release\Win32\glew32.dll" "$(OutDir)"</Command>
+      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\glew-2.3.1\bin\Release\Win32\glew32.dll" "$(OutDir)"
+xcopy /E /I /Y "$(ProjectDir)BlinnPhongShaders" "$(OutDir)BlinnPhongShaders\"
+xcopy /E /I /Y "$(ProjectDir)GouraudShaders" "$(OutDir)GouraudShaders\"
+xcopy /E /I /Y "$(ProjectDir)PhongShaders" "$(OutDir)PhongShaders\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -139,7 +145,10 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\OpenGLTemplate\glew32.dll" "$(OutDir)"</Command>
+      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\OpenGLTemplate\glew32.dll" "$(OutDir)"
+xcopy /E /I /Y "$(ProjectDir)BlinnPhongShaders" "$(OutDir)BlinnPhongShaders\"
+xcopy /E /I /Y "$(ProjectDir)GouraudShaders" "$(OutDir)GouraudShaders\"
+xcopy /E /I /Y "$(ProjectDir)PhongShaders" "$(OutDir)PhongShaders\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,7 +172,10 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\OpenGLTemplate\glew32.dll" "$(OutDir)"</Command>
+      <Command>copy /Y "D:\UnityStudy\Computer_Graphic\Graphic\OpenGLTemplate\glew32.dll" "$(OutDir)"
+xcopy /E /I /Y "$(ProjectDir)BlinnPhongShaders" "$(OutDir)BlinnPhongShaders\"
+xcopy /E /I /Y "$(ProjectDir)GouraudShaders" "$(OutDir)GouraudShaders\"
+xcopy /E /I /Y "$(ProjectDir)PhongShaders" "$(OutDir)PhongShaders\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
